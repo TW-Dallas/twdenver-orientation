@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Team Orientation (NTO)</title>
+    <style>
+        /* --- FONT LOADING --- */
+        @font-face { font-family: 'PizzaPress'; src: url('fonts/Dominos Sans Header 1.ttf') format('truetype'); font-weight: normal; }
+        @font-face { font-family: 'OneDotCd-Bold'; src: url('fonts/Dominos Sans Bold.ttf') format('truetype'); font-weight: bold; }
+        @font-face { font-family: 'OneDotCd'; src: url('fonts/Dominos Sans Body Compact.ttf') format('truetype'); font-weight: normal; }
+
+        :root {
+            --brand-red: #ff0000;
+            --brand-blue: #0090e2;
+            --dark-blue: #005c91;
+            --crust-light: #faf2e9;
+            --crust-deep: #603913;
+            --crust-med: #f0decc;
+        }
+
+        body {
+            font-family: 'OneDotCd', sans-serif;
+            background-color: var(--crust-light);
+            color: var(--crust-deep);
+            padding: 2rem;
+        }
+
+        /* LOGO STYLING */
+        .logo-container {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+        .logo-img {
+            max-width: 250px; /* Adjust size here */
+            height: auto;
+            display: inline-block;
+        }
+
+        /* --- HERO INSTRUCTION BLOCK --- */
+        .instructions-hero {
+            background-color: white;
+            border-left: 8px solid var(--brand-red);
+            border-radius: 8px;
+            padding: 2rem;
+            margin: 0 auto 2rem auto;
+            max-width: 1000px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .hero-title {
+            font-family: 'PizzaPress', serif;
+            font-size: 2.5rem;
+            color: var(--brand-blue);
+            margin: 0 0 1rem 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .instruction-item h4 {
+            font-family: 'OneDotCd-Bold';
+            color: var(--brand-red);
+            margin: 0 0 0.5rem 0;
+            font-size: 1.2rem;
+            text-transform: uppercase;
+        }
+
+        .instruction-item ul { margin: 0; padding-left: 1.2rem; list-style-type: square; }
+        .instruction-item li { margin-bottom: 0.3rem; line-height: 1.4; }
+
+        /* APP BUTTONS */
+        .app-buttons { display: flex; gap: 10px; margin-top: 1rem; }
+        .store-btn {
+            background: #333;
+            color: white;
+            text-decoration: none;
+            padding: 6px 10px;
+            border-radius: 5px;
+            font-size: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: background 0.2s;
+        }
+        .store-btn:hover { background: #000; }
+        .store-btn svg { width: 16px; height: 16px; fill: white; }
+
+        /* HEADER & CONTROLS */
+        .header-controls {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 2rem;
+            gap: 1rem;
+        }
+
+        /* GRID LAYOUT */
+        .class-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        /* --- CARD STYLING --- */
+        .class-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            border-top: 6px solid var(--brand-blue);
+            transition: transform 0.2s;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .class-card:hover { transform: translateY(-4px); box-shadow: 0 10px 15px rgba(0,0,0,0.1); }
+
+        .card-body { padding: 1.5rem; flex-grow: 1; }
+
+        .class-type-badge {
+            display: inline-block;
+            font-family: 'OneDotCd-Bold';
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            padding: 4px 8px;
+            border-radius: 4px;
+            background-color: var(--crust-med);
+            color: var(--crust-deep);
+            margin-bottom: 0.5rem;
+        }
+
+        .date-block { display: flex; align-items: center; gap: 12px; margin-bottom: 0.8rem; }
+        .day-box {
+            background: var(--brand-blue);
+            color: white;
+            font-family: 'OneDotCd-Bold';
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 1.2rem;
+            text-transform: uppercase;
+        }
+        .time-text { color: var(--dark-blue); font-weight: bold; font-size: 1.1rem; }
+
+        h3 {
+            font-family: 'OneDotCd-Bold';
+            font-size: 1.6rem;
+            margin-bottom: 0.5rem;
+            color: var(--crust-deep);
+            line-height: 1.2;
+        }
+
+        .details {
+            font-size: 1rem;
+            color: #666;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            margin-bottom: 1rem;
+        }
+
+        /* ROSTER SECTION */
+        .roster-box {
+            background-color: #f8f9fa;
+            border-radius: 6px;
+            padding: 0.8rem;
+            margin-top: 0.5rem;
+            border: 1px solid #eee;
+        }
+        .roster-header {
+            font-family: 'OneDotCd-Bold';
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            display: block;
+        }
+        .roster-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            font-size: 0.95rem;
+            color: var(--dark-blue);
+            max-height: 100px;
+            overflow-y: auto;
+        }
+        .roster-list li { padding: 2px 0; border-bottom: 1px dashed #eee; }
+        .roster-empty { font-style: italic; color: #999; font-size: 0.85rem; }
+
+        .card-footer {
+            padding: 1rem 1.5rem;
+            background-color: #f8f9fa;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .footer-left { display: flex; flex-direction: column; gap: 2px; }
+        .slots { font-size: 0.9rem; color: #666; font-weight: bold; }
+        
+        .signup-btn {
+            background-color: var(--brand-red);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-family: 'OneDotCd-Bold';
+            cursor: pointer;
+            transition: background 0.2s;
+            font-size: 1rem;
+            text-transform: uppercase;
+        }
+        .signup-btn:hover { background-color: #d60000; }
+        .signup-btn:disabled { background-color: #ccc; cursor: not-allowed; }
+
+        #loading-msg { text-align: center; font-style: italic; color: #666; margin-top: 2rem; }
+
+        /* --- POPUP MODAL --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(3px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        .modal-overlay.active { opacity: 1; pointer-events: all; }
+        
+        .modal-box {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            border-top: 6px solid var(--brand-blue);
+        }
+        .modal-title {
+            font-family: 'OneDotCd-Bold';
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--dark-blue);
+        }
+        .form-group { margin-bottom: 1rem; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; font-size: 0.9rem; }
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 1rem;
+            box-sizing: border-box; /* Fix padding issues */
+        }
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 1.5rem;
+        }
+        .btn-cancel {
+            background: #eee;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: 'OneDotCd-Bold';
+        }
+        .btn-confirm {
+            background: var(--brand-blue);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: 'OneDotCd-Bold';
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="logo-container">
+        <!-- Replace 'logo.png' with your actual image file or URL -->
+        <img src="New_Logo_v2.png" alt="Team Wow Logo" class="logo-img">
+    </div>
+
+       <!-- HERO INSTRUCTION BLOCK -->
+    <div class="instructions-hero">
+        <h1 class="hero-title">Class Requirements</h1>
+        
+        <div class="hero-grid">
+            <!-- COL 1: TECH -->
+            <div class="instruction-item">
+                <h4>💻 Device Policy</h4>
+                <ul>
+                    <li><strong>Laptop or Desktop REQUIRED.</strong></li>
+                    <li>Camera & Microphone must be working.</li>
+                </ul>
+                <div style="margin-top:10px; font-size:0.85rem; color:#666;">Need the App?</div>
+                <div class="app-buttons">
+                    <!-- iOS (Updated Link) -->
+                    <a href="https://apps.apple.com/us/app/google-meet/id1096918571" target="_blank" class="store-btn">
+                        <svg viewBox="0 0 384 512"><path d="M318.7 268.7c25.5-13.3 56.1-51.4 56.1-51.4S323.3 194 286.7 210.6c-48 21.8-88 15.6-88 15.6s29.7-54.3 22.9-106c-8.7-66-88-88-88-88s34.3 64.9-5.1 114.7c-33.3 42.1-118 41.5-118 41.5s52.7 21.9 66.5 54c16 37.3-17.6 117.8-17.6 117.8s50.4-23.9 83.1-61.9c36.2-42.3 35.8-93.7 35.8-93.7s57.2 27.2 81.3 62.8c28.1 41.5-1.1 127.3-1.1 127.3s64.9-38.1 71.9-96c2.8-22.9-6.9-46.7-16.7-62.1z"/></svg> iOS
+                    </a>
+                    <!-- Android (Updated Link - 'Tachyon' is the correct new package) -->
+                    <a href="https://play.google.com/store/apps/details?id=com.google.android.apps.tachyon" target="_blank" class="store-btn">
+                        <svg viewBox="0 0 512 512"><path d="M325.3 234.3L104.6 13l280.8 161.2-60.1 60.1zM47 0C34 6.8 25.3 19.2 25.3 35.3v441.3c0 16.1 8.7 28.5 21.7 35.3l256.6-256L47 0zm425.2 225.6l-58.9-34.1-65.7 64.5 65.7 64.5 60.1-34.1c18-14.3 18-46.5-1.2-60.8zM104.6 499l280.8-161.2-60.1-60.1L104.6 499z"/></svg> Android
+                    </a>
+                </div>
+            </div>
+
+            <!-- COL 2: ENV -->
+            <div class="instruction-item">
+                <h4>🚫 Environment</h4>
+                <ul>
+                    <li><strong>NO MOVING VEHICLES.</strong></li>
+                    <li>Must be in a quiet area.</li>
+                    <li>You will be removed for distractions.</li>
+                </ul>
+            </div>
+
+            <!-- COL 3: ACCESS -->
+            <div class="instruction-item">
+                <h4>🆔 Check-In</h4>
+                <ul>
+                    <li>Login with the name on your ID.</li>
+                    <li>Wait with Cam/Mic OFF.</li>
+                    <li><strong>Unknown names = No Entry.</strong></li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- UPDATED ALERT BOX -->
+        <div style="margin-top: 1.5rem; padding: 1rem; background-color: #fff3cd; border: 1px solid #ffeeba; color: #856404; border-radius: 4px; font-size: 0.95rem; line-height: 1.6;">
+            <strong>⚠️ IMPORTANT DETAILS:</strong><br>
+            • <strong>Exceptions:</strong> If your device is not compliant or your name differs from your ID, notify the trainer beforehand.<br>
+            • <strong>Time:</strong> Class takes 1 - 1.5 hours. Please plan accordingly.<br>
+            • <strong>Deadline:</strong> Enrollment closes <u>2 hours before</u> the class begins.<br>
+            • <strong>Link:</strong> The class link will be emailed to you after the enrollment window closes.
+        </div>
+
+    </div>
+
+    <div id="loading-msg">Loading Schedule...</div>
+    <div class="class-grid" id="class-grid"></div>
+
+    <!-- HIDDEN MODAL -->
+    <div class="modal-overlay" id="signup-modal">
+        <div class="modal-box">
+            <div class="modal-title">Sign Up for Class</div>
+            
+            <div class="form-group">
+                <label>Full Name</label>
+                <input type="text" id="input-name" placeholder="John Doe">
+            </div>
+            
+            <div class="form-group">
+                <label>Phone Number</label>
+                <input type="tel" id="input-phone" placeholder="555-123-4567">
+            </div>
+
+            <div class="form-group">
+                <label>Email Address</label>
+                <input type="email" id="input-email" placeholder="john@example.com">
+            </div>
+
+            <div class="modal-actions">
+                <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+                <button class="btn-confirm" id="btn-confirm-signup" onclick="submitSignup()">Confirm Signup</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPT -->
+    <script>
+        // REPLACE THIS WITH YOUR NEW SCRIPT URL
+        const API_URL = "https://script.google.com/macros/s/AKfycbw6jYiu1YfTRRPu0h5QN0kLYK8e9FGKPCfKbs8VZB_eztKUZGV4K9xL2tSU-HPZTg0mbQ/exec";
+        
+        let allData = [];
+        let selectedClassId = null; // Store ID for modal
+
+        window.addEventListener('load', fetchClasses);
+
+        function fetchClasses() {
+            document.getElementById('loading-msg').style.display = 'block';
+            document.getElementById('class-grid').innerHTML = '';
+
+            fetch(API_URL)
+                .then(response => response.json())
+                .then(data => {
+                    allData = data;
+                    renderClasses(data);
+                    document.getElementById('loading-msg').style.display = 'none';
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById('loading-msg').innerText = "Error loading schedule.";
+                });
+        }
+
+        function renderClasses(data) {
+            const grid = document.getElementById('class-grid');
+            grid.innerHTML = ''; 
+
+            if (data.length === 0) {
+                grid.innerHTML = '<p style="text-align:center; width:100%;">No classes found.</p>';
+                return;
+            }
+            
+            const now = new Date();
+            const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            const twoWeeksOut = new Date(todayStart);
+            twoWeeksOut.setDate(todayStart.getDate() + 14);
+            const yesterday = new Date(todayStart);
+            yesterday.setDate(todayStart.getDate() - 1);
+
+            const processedData = data.filter(cls => {
+                const classDate = new Date(cls.isoDate);
+                if (classDate < yesterday) return false;
+                if (classDate > twoWeeksOut) return false;
+                return true;
+            }).sort((a, b) => new Date(a.isoDate) - new Date(b.isoDate));
+
+            if (processedData.length === 0) {
+                grid.innerHTML = '<p style="text-align:center; width:100%;">No classes scheduled for the next 14 days.</p>';
+                return;
+            }
+
+                        processedData.forEach(cls => {
+                const card = document.createElement('div');
+                card.className = `class-card`;
+                
+                const classDate = new Date(cls.isoDate);
+                const dayName = classDate.toLocaleDateString("en-US", { weekday: 'long' });
+                const dateStr = classDate.toLocaleDateString("en-US", { month: 'short', day: 'numeric' });
+                const timeStr = classDate.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+
+                // --- 2-HOUR DEADLINE LOGIC ---
+                const now = new Date();
+                const deadline = new Date(classDate.getTime() - (2 * 60 * 60 * 1000)); // Subtract 2 hours (in milliseconds)
+                const isClosed = now > deadline;
+
+                const attendees = cls.attendees || [];
+                let rosterHTML = attendees.length > 0 
+                    ? attendees.map(name => `<li>${formatName(name)}</li>`).join('')
+                    : '<li class="roster-empty">No signups yet</li>';
+
+                // Determine Button State
+                let btnText = "Sign Up";
+                let btnDisabled = false;
+
+                if (isClosed) {
+                    btnText = "Signup Closed";
+                    btnDisabled = true;
+                } else if (cls.spots_taken >= cls.spots_total) {
+                    btnText = "Full";
+                    btnDisabled = true;
+                }
+
+                card.innerHTML = `
+                    <div class="card-body">
+                        <span class="class-type-badge">Virtual Orientation</span>
+                        
+                        <div class="date-block">
+                            <div class="day-box">${dayName}</div>
+                            <div class="time-text">${dateStr} • ${timeStr}</div>
+                        </div>
+
+                        <h3>${cls.name || "NTO Class"}</h3>
+                        <div class="details">
+                            <span>📹 Google Meet (Virtual)</span>
+                            <span>👨‍🏫 Trainer: ${cls.trainer}</span>
+                        </div>
+
+                        <div class="roster-box">
+                            <span class="roster-header">Who's Going?</span>
+                            <ul class="roster-list">${rosterHTML}</ul>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="footer-left">
+                            <span class="slots">${cls.spots_total - cls.spots_taken} Spots Left</span>
+                        </div>
+                        <button class="signup-btn" 
+                                onclick="openSignupModal('${cls.id}')"
+                                ${btnDisabled ? 'disabled' : ''}>
+                            ${btnText}
+                        </button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function formatName(fullName) {
+            if(!fullName) return "";
+            // 1. Trim spaces from start/end
+            // 2. Split by ANY amount of whitespace (handles double spaces too)
+            const parts = fullName.trim().split(/\s+/);
+            
+            if(parts.length > 1) {
+                return `${parts[0]} ${parts[parts.length-1].charAt(0)}.`;
+            }
+            return parts[0]; // If they only typed "Cher", just show "Cher"
+        }
+
+
+        // --- NEW MODAL FUNCTIONS ---
+        function openSignupModal(classId) {
+            selectedClassId = classId;
+            document.getElementById('signup-modal').classList.add('active');
+            // Clear previous inputs
+            document.getElementById('input-name').value = '';
+            document.getElementById('input-phone').value = '';
+            document.getElementById('input-email').value = '';
+        }
+
+        function closeModal() {
+            document.getElementById('signup-modal').classList.remove('active');
+            selectedClassId = null;
+        }
+
+        function submitSignup() {
+            const name = document.getElementById('input-name').value;
+            const phone = document.getElementById('input-phone').value;
+            const email = document.getElementById('input-email').value;
+
+            if(!name || !phone || !email) {
+                alert("Please fill in all fields.");
+                return;
+            }
+
+            const btn = document.getElementById('btn-confirm-signup');
+            btn.innerText = "Processing...";
+            btn.disabled = true;
+
+            const formData = new URLSearchParams();
+            formData.append('classId', selectedClassId); 
+            formData.append('name', name);
+            formData.append('phone', phone);
+            formData.append('email', email);
+
+            fetch(API_URL, {
+                method: "POST",
+                body: formData,
+                mode: 'no-cors' 
+            }).then(() => {
+                alert(`Success! ${name} has been signed up.`);
+                closeModal();
+                btn.innerText = "Confirm Signup";
+                btn.disabled = false;
+                setTimeout(fetchClasses, 1000); // Reload grid
+            }).catch(err => {
+                alert("Error signing up.");
+                btn.innerText = "Confirm Signup";
+                btn.disabled = false;
+            });
+        }
+    </script>
+    
+    <!-- FOOTER -->
+    <div style="text-align: center; padding: 2rem 0; margin-top: 3rem; background-color: var(--dark-blue); color: white; width: 100vw; position: relative; left: 50%; right: 50%; margin-left: -50vw; margin-right: -50vw; margin-bottom: -2rem;">
+        <p style="margin:0; font-size:0.9rem;">&copy; 2026 Team Wow!</p>
+    </div>
+
+</body>
+</html>
