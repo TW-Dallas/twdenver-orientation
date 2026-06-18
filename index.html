@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:,">
+    <title>Staffing Command Center</title>
+    <link rel="icon" type="image/png" href="image/tile_blue.png">
+        <style>
+        @font-face { font-family: 'PizzaPress'; src: url('fonts/Dominos Sans Header 1.ttf') format('truetype'); font-weight: bold; }
+        @font-face { font-family: 'OneDotCd-Bold'; src: url('fonts/Dominos Sans Bold.ttf') format('truetype'); font-weight: bold; }
+        @font-face { font-family: 'OneDotCd'; src: url('fonts/Dominos Sans Body Compact.ttf') format('truetype'); font-weight: normal; }
+
+        :root {
+            --brand-red: #ff0000;
+            --brand-blue: #0090e2;
+            --brand-green: #28a745;
+            --brand-orange: #ff8f00;
+            --brand-grey: #6c757d;
+            --crust-light: #faf2e9;
+            --crust-med: #f0decc;
+            --crust-dark: #c0a588;
+            --bg-color: var(--crust-light);
+            --card-bg: #FFFFFF;
+            --text-dark: #472b10;
+            --text-light: #603913;
+            --border-radius: 12px;
+        }
+
+        body { font-family: 'OneDotCd', sans-serif; background-color: var(--bg-color); margin: 0; padding: 0; color: var(--text-dark); }
+        header { background-color: #005c91; color: white; padding: 12px 16px; position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 12px rgba(71, 43, 16, 0.15); display: flex; align-items: center; gap: 12px; }
+        .logo { height: 32px; width: auto; }
+        h1 { margin: 0; font-family: 'PizzaPress', serif; font-size: 20px; text-transform: uppercase; }
+        .subtitle { font-family: 'OneDotCd', sans-serif; font-size: 12px; opacity: 0.9; }
+
+        /* --- CONTROLS --- */
+        .controls { padding: 12px 16px; background: white; border-bottom: 2px solid var(--crust-med); display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; }
+        select { padding: 8px; border-radius: 8px; border: 1px solid var(--crust-dark); background: var(--crust-light); font-family: 'OneDotCd-Bold', sans-serif; font-size: 16px; color: var(--text-dark); width: 250px; }
+        .view-toggle { display: flex; background: var(--crust-med); border-radius: 8px; padding: 4px; margin-left: auto; }
+        .view-btn { padding: 8px 16px; border: none; background: none; font-family: 'OneDotCd-Bold', sans-serif; font-size: 14px; color: #472b10; cursor: pointer; border-radius: 6px; text-transform: uppercase; }
+        .view-btn.active { background: white; color: var(--brand-blue); box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+
+        @media (max-width: 600px) {
+            .controls { gap: 8px; justify-content: space-between; }
+            select { width: 48%; min-width: 0; flex: 0 0 48%; margin-bottom: 0; }
+            .view-toggle { width: 100%; justify-content: center; margin-left: 0; margin-top: 4px; flex: 0 0 100%; }
+            .view-btn { flex: 1; text-align: center; } 
+        }
+
+        .container { padding: 16px; max-width: 800px; margin: 0 auto; }
+        
+        /* --- CARD STYLES --- */
+        .card { background: var(--card-bg); border-radius: var(--border-radius); padding: 16px; margin-bottom: 12px; box-shadow: 0 4px 6px rgba(71, 43, 16, 0.05); border-left: 6px solid transparent; position: relative; }
+        
+        /* Status Borders */
+        .card.status-blue { border-left-color: var(--brand-blue); }
+        .card.status-green { border-left-color: var(--brand-green); border-left-width: 8px; }
+        .card.status-red { border-left-color: var(--brand-red); border: 2px solid var(--brand-red); } 
+        .card.status-orange { border-left-color: var(--brand-orange); }
+        .card.status-gray { border-left-color: #6c757d; opacity: 0.8; background-color: #f8f9fa; }
+        .card.status-blue .notes-section { border-left-color: var(--brand-blue); }
+        .card.status-green .notes-section { border-left-color: var(--brand-green); }
+
+        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+        .name { font-family: 'OneDotCd-Bold', sans-serif; font-size: 18px; color: var(--text-dark); }
+        .position-badge { font-family: 'OneDotCd-Bold', sans-serif; font-size: 12px; padding: 4px 8px; border-radius: 12px; background: var(--crust-light); color: #005c91; border: 1px solid var(--crust-med); }
+        
+        .meta-row { display: flex; justify-content: space-between; font-family: 'OneDotCd', sans-serif; font-size: 14px; color: var(--text-light); margin-bottom: 8px; }
+
+        /* --- PIPELINE VISUALS --- */
+        .pipeline-container { margin-top: 10px; margin-bottom: 6px; }
+        .pipeline-track { background: #eee; height: 8px; border-radius: 4px; overflow: hidden; width: 100%; }
+        .pipeline-fill { height: 100%; transition: width 0.5s ease; background: var(--brand-blue); }
+        .pipeline-fill.green { background: var(--brand-green); }
+        .pipeline-fill.red { background: var(--brand-red); }
+        .pipeline-fill.grey { background: #6c757d; }
+
+        .status-text { font-family: 'OneDotCd-Bold', sans-serif; font-size: 14px; color: var(--brand-blue); display: flex; justify-content: space-between; align-items: center; }
+        .status-text.red { color: var(--brand-red); }
+        .status-text.green { color: var(--brand-green); }
+        .status-text.grey { color: #6c757d; }
+
+        /* --- DATA CHIPS --- */
+        .chip-container { display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
+        .chip { font-size: 12px; background: #f0f4f8; padding: 4px 8px; border-radius: 6px; border: 1px solid #dde1e6; color: #555; display: flex; align-items: center; gap: 4px; }
+        .chip-nto { background: #e3f2fd; color: #0d47a1; border-color: #bbdefb; font-weight: bold; }
+
+        /* --- GM APPOINTMENT BOX (Restored!) --- */
+        .gm-appt-box { background-color: #e8f5e9; border: 1px solid #28a745; color: #1b5e20; padding: 10px; border-radius: 8px; margin-top: 8px; display: flex; flex-direction: column; gap: 4px; }
+        .gm-appt-label { font-size: 11px; text-transform: uppercase; opacity: 0.8; font-weight: bold; }
+        .gm-appt-time { font-family: 'OneDotCd-Bold', sans-serif; font-size: 16px; }
+
+        /* --- NOTES --- */
+        .notes-section { font-size: 14px; margin-top: 10px; color: var(--text-light); background: #f9f9f9; padding: 8px; border-radius: 6px; border-left: 3px solid #ccc; }
+        .notes-section.hold-notes { background: #ffebee; border-left-color: var(--brand-red); color: #b71c1c; }
+
+        .updated-text { font-size: 11px; color: #999; text-align: right; margin-top: 8px; font-style: italic; }
+        .loader { text-align: center; padding: 40px; color: var(--crust-dark); font-family: 'PizzaPress', serif; font-size: 18px; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+
+<header>
+    <img src="New_Logo_v2.png" alt="Logo" class="logo" onerror="this.style.display='none'">
+    <div class="header-text">
+        <h1>Staffing Command</h1>
+        <div class="subtitle">Team Wow Hiring Tracker</div>
+    </div>
+</header>
+
+<div class="controls">
+    <select id="doFilter"><option value="All">All DOs</option></select>
+    <select id="storeFilter"><option value="All">All Stores</option></select>
+    <div class="view-toggle">
+        <button class="view-btn active" onclick="switchView('onboarding')">Pipeline</button>
+        <!--<button class="view-btn" onclick="switchView('interviews')">Interviews</button>-->
+    </div>
+</div>
+
+<div class="container">
+    <div id="loader" class="loader">Accessing Database...</div>
+    <div id="onboardingList"></div>
+    <!--<div id="interviewList" class="hidden"></div>-->
+</div>
+
+<script>
+    const API_URL = "https://script.google.com/macros/s/AKfycbwAqKgtbAgWeuTBkSYvNajcAPTyuBMAdFiOGsl16LX2pjYYcULFtNQmvyM18wlPT8bomQ/exec";
+    let rawData = { onboarding: [] };
+
+    fetch(API_URL)
+        .then(response => response.json())
+        .then(data => {
+            rawData = data;
+            populateFilters();
+            renderOnboarding();
+//            renderInterviews();
+            // Ensure loader is hidden ONLY after success
+            document.getElementById('loader').classList.add('hidden');
+        })
+        .catch(err => {
+            document.getElementById('loader').innerText = "Error Loading Data";
+            console.error(err);
+        });
+
+    function populateFilters() {
+        const allDos = [...rawData.onboarding.map(i => i.doName), ...rawData.interviews.map(i => i.doName)];
+        const dos = [...new Set(allDos.filter(d => d && d !== 'DO').map(d => d.toString().trim()))].sort();
+        const allStores = [...rawData.onboarding.map(i => i.store), ...rawData.interviews.map(i => i.store)];
+        const stores = [...new Set(allStores.filter(s => s && s !== 'Store #').map(s => s.toString().trim()))].sort();
+
+        const doSelect = document.getElementById('doFilter');
+        doSelect.innerHTML = '<option value="All">All DOs</option>';
+        dos.forEach(d => { let opt = document.createElement('option'); opt.value = d; opt.innerText = d; doSelect.appendChild(opt); });
+
+        const storeSelect = document.getElementById('storeFilter');
+        storeSelect.innerHTML = '<option value="All">All Stores</option>';
+        stores.forEach(s => { let opt = document.createElement('option'); opt.value = s; opt.innerText = s; storeSelect.appendChild(opt); });
+
+        doSelect.addEventListener('change', refreshViews);
+        storeSelect.addEventListener('change', refreshViews);
+    }
+
+    function refreshViews() { renderOnboarding(); renderInterviews(); }
+
+    function getPipelineData(status) {
+        const s = status ? status.toLowerCase() : '';
+
+        // 0. INELIGIBLE (New)
+        if (s.includes('ineligible') || s.includes('rejected')) { 
+            return { pct: 100, color: 'grey', label: 'Ineligible' }; 
+        }
+        // 0.5. INACTIVE (New Block)
+        if (s.includes('inactive')) { 
+            return { pct: 100, color: 'grey', label: 'Inactive' }; // Maybe a lighter grey?
+        }
+        
+        // 1. HIRED
+        if (s.includes('hired')) return { pct: 100, color: 'green', label: 'Hired' };
+        
+        // 2. NTO STAGES (Order matters!)
+        if (s.includes('nto signup link') || s.includes('link sent')) {
+            return { pct: 80, color: 'blue', label: 'NTO Signup Link Sent' }; 
+        }
+        if (s.includes('nto')) {
+            return { pct: 90, color: 'blue', label: 'NTO Scheduled' }; 
+        }
+        
+        // 3. ONBOARDING
+        if (s.includes('onboard') || s.includes('background')) return { pct: 70, color: 'blue', label: 'Onboarding' };
+        
+        // 4. OFFER
+        if (s.includes('offer')) return { pct: 50, color: 'blue', label: 'Offer Letter Sent' };
+        
+        // 5. EARLIER STAGES
+        if (s.includes('interview')) return { pct: 30, color: 'blue', label: 'Interviewing' };
+        if (s.includes('submission')) return { pct: 15, color: 'blue', label: 'Submission Received' };
+        
+        // 6. HOLD
+        if (s.includes('hold')) return { pct: 100, color: 'red', label: 'HOLD' };
+        
+        // Fallback
+        return { pct: 5, color: 'gray', label: status };
+    }
+
+    // --- SORTING LOGIC ---
+   function getStatusWeight(item) {
+        const s = item.status ? item.status.toLowerCase() : '';
+        
+        // 1. HIRED (The Freshness Rule)
+        if (s.includes('hired')) {
+            const today = new Date();
+            today.setHours(0,0,0,0);
+            const updateDate = new Date(item.lastUpdated); 
+            updateDate.setHours(0,0,0,0);
+            
+            // If Hired Today -> Top (0). If Old -> Bottom (10).
+            return (updateDate.getTime() === today.getTime()) ? 0 : 10;
+        }
+
+        // 2. ACTIVE FUNNEL (Ordered by "Closest to Finish")
+        if (s.includes('nto')) return 1;        // Almost Hired
+        if (s.includes('onboard')) return 2;    // Middle
+        if (s.includes('offer')) return 3;      // Early
+        if (s.includes('submission')) return 4; // Start
+        
+        // 3. STALLED
+        if (s.includes('ineligible') || s.includes('inactive') || s.includes('rejected')) return 7; // Just above Holds (8)
+        if (s.includes('hold')) return 8;       // Stalled at bottom of active list
+        
+        return 5; // Catch-all (Active stuff that didn't match above)
+    }
+
+    function formatPhone(phone) {
+        if (!phone) return '';
+        // Strip everything but numbers
+        const cleaned = ('' + phone).replace(/\D/g, '');
+        // Check for standard 10 digit
+        const match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/);
+        if (match) {
+            return '(' + match[1] + ') ' + match[2] + '-' + match[3];
+        }
+        return phone; // Return original if weird format
+    }
+
+    function renderOnboarding() {
+        const list = document.getElementById('onboardingList');
+        list.innerHTML = '';
+        const doVal = document.getElementById('doFilter').value;
+        const storeVal = document.getElementById('storeFilter').value;
+
+        const filtered = rawData.onboarding.filter(item => {
+            const iDo = item.doName ? item.doName.toString().trim() : '';
+            const iStore = item.store ? item.store.toString().trim() : '';
+            return item.store !== 'Store #' && 
+                   (doVal === 'All' || iDo === doVal) &&
+                   (storeVal === 'All' || iStore === storeVal);
+        }).sort((a, b) => getStatusWeight(a) - getStatusWeight(b));
+
+        if(filtered.length === 0) { list.innerHTML = '<div class="loader">No candidates active.</div>'; return; }
+
+        filtered.forEach(item => {
+            const icon = (item.position && item.position.includes('DE')) ? '🚗' : '🍕';
+            
+            // --- NEW: COLOR LOGIC ---
+            const sLower = item.status ? item.status.toLowerCase() : '';
+            let cardClass = 'status-blue'; // Default
+            
+            // Check Inactive FIRST
+            if (sLower.includes('inactive')) {
+                cardClass = 'status-gray'; // <--- SET THE CLASS
+            }
+            // Then check Ineligible
+            else if (sLower.includes('ineligible') || sLower.includes('rejected')) {
+                cardClass = 'status-gray'; // <--- SET THE CLASS
+            }
+            // 2. Check for Red (Hold)
+            else if (sLower.includes('hold')) {
+                cardClass = 'status-red';
+            }
+            // 3. Check for Green (Hired)
+            else if (sLower.includes('hired')) {
+                cardClass = 'status-green';
+            }
+            
+            // Pipeline Data
+            const pipe = getPipelineData(item.status);
+            
+            // Chips
+            let chipsHtml = '';
+            if (item.shirtSize) chipsHtml += `<span class="chip">👕 ${item.shirtSize}</span>`;
+            if (item.payCard) chipsHtml += `<span class="chip">💳 ${item.payCard}</span>`;
+            if (item.ntoDate) chipsHtml += `<span class="chip chip-nto">📅 NTO: ${item.ntoDate}</span>`;
+
+            // Notes
+            let notesHtml = '';
+            if (item.notes) {
+                const noteClass = sLower.includes('hold') ? 'hold-notes' : '';
+                notesHtml = `<div class="notes-section ${noteClass}">${item.notes}</div>`;
+            }
+
+            // Timestamp
+            let updatedHtml = '';
+            if (item.lastUpdated) {
+                let displayTime = item.lastUpdated;
+                try {
+                    const d = new Date(item.lastUpdated);
+                    if (!isNaN(d.getTime())) {
+                        displayTime = d.toLocaleString('en-US', { month: 'numeric', day: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true });
+                    }
+                } catch (e) {}
+                updatedHtml = `<div class="updated-text">Updated: ${displayTime}</div>`;
+            }
+
+            const html = `
+                <div class="card ${cardClass}">  <!-- ADD THIS LINE BACK -->
+                <div class="card-header">
+                    <div class="name-phone-group" style="display: flex; flex-direction: column;">
+                        <div class="name">${item.name}</div>
+                        ${item.phoneNumber ? `<a href="tel:${item.phoneNumber}" style="text-decoration: none; color: #006491; font-weight: bold; font-size: 0.85rem; margin-top: 2px;">📞 ${formatPhone(item.phoneNumber)}</a>` : ''}
+                    </div>
+                    <div class="position-badge">${icon} ${item.position}</div>
+                </div>
+                
+                <div class="meta-row"><span>Store #${item.store}</span><span>DO: ${item.doName}</span></div>
+
+                    <div class="pipeline-container">
+                        <div class="pipeline-track">
+                            <div class="pipeline-fill ${pipe.color}" style="width: ${pipe.pct}%"></div>
+                        </div>
+                    </div>
+                    <div class="status-text ${pipe.color}">${pipe.label}</div>
+
+                    <div class="chip-container">${chipsHtml}</div>
+                    ${notesHtml}
+                    ${updatedHtml}
+                </div>`;
+            list.innerHTML += html;
+        });
+    }
+
+    // function renderInterviews() {
+    //     const list = document.getElementById('interviewList');
+    //     list.innerHTML = '';
+    //     const doVal = document.getElementById('doFilter').value;
+    //     const storeVal = document.getElementById('storeFilter').value;
+
+    //     const filtered = rawData.interviews.filter(item => {
+    //         const iDo = item.doName ? item.doName.toString().trim() : '';
+    //         const iStore = item.store ? item.store.toString().trim() : '';
+    //         return item.store !== 'Store #' &&
+    //                (doVal === 'All' || iDo === doVal) &&
+    //                (storeVal === 'All' || iStore === storeVal);
+    //     });
+
+    //     if(filtered.length === 0) { list.innerHTML = '<div class="loader">No interviews scheduled.</div>'; return; }
+
+    //     filtered.forEach(item => {
+    //         const icon = (item.position && item.position.includes('DE')) ? '🚗' : (item.position && item.position.includes('BIKE')) ? '🚲' : '🍕';
+    //         let statusColor = 'status-blue';
+    //         const s = item.status ? item.status.toString() : '';
+    //         if(s.includes('No Show') || s.includes('Canceled') || s.includes('Pass')) statusColor = 'status-red';
+    //         if(s.includes('2nd Interview') || s.includes('Hired') || s.includes('Offered')) statusColor = 'status-green';
+    //         if(s.includes('Offered') || s.includes('TBD')) statusColor = 'status-orange';
+    //         if(s.includes('Reschedule') || s.includes('Withdrawn')) statusColor = 'status-gray';
+
+    //         let showGmBox = false;
+    //         if (item.gmDate) {
+    //             try {
+    //                 const dateStr = item.gmDate + (item.gmTime ? ' ' + item.gmTime : '');
+    //                 const apptDate = new Date(dateStr);
+    //                 const now = new Date();
+    //                 if (!isNaN(apptDate.getTime())) { showGmBox = apptDate > now; }
+    //             } catch(e) { showGmBox = false; }
+    //         }
+
+    //         let gmHtml = '';
+    //         if (showGmBox) {
+    //             gmHtml = `<div class="gm-appt-box"><div class="gm-appt-label">GM Interview Scheduled</div><div class="gm-appt-time">📅 ${item.gmDate} @ ${item.gmTime}</div></div>`;
+    //         }
+
+    //         let notesHtml = '';
+    //         if (item.notes && item.notes.trim() !== '') { notesHtml = `<div class="notes-section">📝 ${item.notes}</div>`; }
+
+    //         const html = `
+    //             <div class="card ${statusColor}">
+    //                 <div class="card-header"><div class="name">${item.name}</div><div class="position-badge">${icon} ${item.position}</div></div>
+    //                 <div class="meta-row"><span>${item.day} ${item.time}</span><span>Store #${item.store}</span></div>
+    //                 <div class="main-status">Result: ${item.status}</div>
+    //                 ${gmHtml}
+    //                 ${notesHtml}
+    //             </div>`;
+    //         list.innerHTML += html;
+    //     });
+    // }
+
+    // function switchView(viewName) {
+    //     document.querySelectorAll('.view-btn').forEach(btn => btn.classList.remove('active'));
+    //     event.target.classList.add('active');
+    //     if(viewName === 'onboarding') {
+    //         document.getElementById('onboardingList').classList.remove('hidden');
+    //         document.getElementById('interviewList').classList.add('hidden');
+    //     } else {
+    //         document.getElementById('onboardingList').classList.add('hidden');
+    //         document.getElementById('interviewList').classList.remove('hidden');
+    //     }
+    // }
+    
+</script>
+</body>
+</html>
+
+
+
