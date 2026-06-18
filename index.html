@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="data:,">
-    <title>Staffing Command Center</title>
+    <title>Denver Staffing Command Center</title>
     <link rel="icon" type="image/png" href="image/tile_blue.png">
         <style>
         @font-face { font-family: 'PizzaPress'; src: url('fonts/Dominos Sans Header 1.ttf') format('truetype'); font-weight: bold; }
@@ -104,7 +104,7 @@
 <header>
     <img src="New_Logo_v2.png" alt="Logo" class="logo" onerror="this.style.display='none'">
     <div class="header-text">
-        <h1>Staffing Command</h1>
+        <h1>Denver Staffing Command</h1>
         <div class="subtitle">Team Wow Hiring Tracker</div>
     </div>
 </header>
@@ -112,16 +112,13 @@
 <div class="controls">
     <select id="doFilter"><option value="All">All DOs</option></select>
     <select id="storeFilter"><option value="All">All Stores</option></select>
-    <div class="view-toggle">
         <button class="view-btn active" onclick="switchView('onboarding')">Pipeline</button>
-        <!--<button class="view-btn" onclick="switchView('interviews')">Interviews</button>-->
     </div>
 </div>
 
 <div class="container">
     <div id="loader" class="loader">Accessing Database...</div>
     <div id="onboardingList"></div>
-    <!--<div id="interviewList" class="hidden"></div>-->
 </div>
 
 <script>
@@ -134,8 +131,6 @@
             rawData = data;
             populateFilters();
             renderOnboarding();
-//            renderInterviews();
-            // Ensure loader is hidden ONLY after success
             document.getElementById('loader').classList.add('hidden');
         })
         .catch(err => {
@@ -161,7 +156,7 @@
         storeSelect.addEventListener('change', refreshViews);
     }
 
-    function refreshViews() { renderOnboarding(); renderInterviews(); }
+    function refreshViews() { renderOnboarding(); }
 
     function getPipelineData(status) {
         const s = status ? status.toLowerCase() : '';
@@ -193,7 +188,6 @@
         if (s.includes('offer')) return { pct: 50, color: 'blue', label: 'Offer Letter Sent' };
         
         // 5. EARLIER STAGES
-        if (s.includes('interview')) return { pct: 30, color: 'blue', label: 'Interviewing' };
         if (s.includes('submission')) return { pct: 15, color: 'blue', label: 'Submission Received' };
         
         // 6. HOLD
@@ -339,73 +333,6 @@
         });
     }
 
-    // function renderInterviews() {
-    //     const list = document.getElementById('interviewList');
-    //     list.innerHTML = '';
-    //     const doVal = document.getElementById('doFilter').value;
-    //     const storeVal = document.getElementById('storeFilter').value;
-
-    //     const filtered = rawData.interviews.filter(item => {
-    //         const iDo = item.doName ? item.doName.toString().trim() : '';
-    //         const iStore = item.store ? item.store.toString().trim() : '';
-    //         return item.store !== 'Store #' &&
-    //                (doVal === 'All' || iDo === doVal) &&
-    //                (storeVal === 'All' || iStore === storeVal);
-    //     });
-
-    //     if(filtered.length === 0) { list.innerHTML = '<div class="loader">No interviews scheduled.</div>'; return; }
-
-    //     filtered.forEach(item => {
-    //         const icon = (item.position && item.position.includes('DE')) ? '🚗' : (item.position && item.position.includes('BIKE')) ? '🚲' : '🍕';
-    //         let statusColor = 'status-blue';
-    //         const s = item.status ? item.status.toString() : '';
-    //         if(s.includes('No Show') || s.includes('Canceled') || s.includes('Pass')) statusColor = 'status-red';
-    //         if(s.includes('2nd Interview') || s.includes('Hired') || s.includes('Offered')) statusColor = 'status-green';
-    //         if(s.includes('Offered') || s.includes('TBD')) statusColor = 'status-orange';
-    //         if(s.includes('Reschedule') || s.includes('Withdrawn')) statusColor = 'status-gray';
-
-    //         let showGmBox = false;
-    //         if (item.gmDate) {
-    //             try {
-    //                 const dateStr = item.gmDate + (item.gmTime ? ' ' + item.gmTime : '');
-    //                 const apptDate = new Date(dateStr);
-    //                 const now = new Date();
-    //                 if (!isNaN(apptDate.getTime())) { showGmBox = apptDate > now; }
-    //             } catch(e) { showGmBox = false; }
-    //         }
-
-    //         let gmHtml = '';
-    //         if (showGmBox) {
-    //             gmHtml = `<div class="gm-appt-box"><div class="gm-appt-label">GM Interview Scheduled</div><div class="gm-appt-time">📅 ${item.gmDate} @ ${item.gmTime}</div></div>`;
-    //         }
-
-    //         let notesHtml = '';
-    //         if (item.notes && item.notes.trim() !== '') { notesHtml = `<div class="notes-section">📝 ${item.notes}</div>`; }
-
-    //         const html = `
-    //             <div class="card ${statusColor}">
-    //                 <div class="card-header"><div class="name">${item.name}</div><div class="position-badge">${icon} ${item.position}</div></div>
-    //                 <div class="meta-row"><span>${item.day} ${item.time}</span><span>Store #${item.store}</span></div>
-    //                 <div class="main-status">Result: ${item.status}</div>
-    //                 ${gmHtml}
-    //                 ${notesHtml}
-    //             </div>`;
-    //         list.innerHTML += html;
-    //     });
-    // }
-
-    // function switchView(viewName) {
-    //     document.querySelectorAll('.view-btn').forEach(btn => btn.classList.remove('active'));
-    //     event.target.classList.add('active');
-    //     if(viewName === 'onboarding') {
-    //         document.getElementById('onboardingList').classList.remove('hidden');
-    //         document.getElementById('interviewList').classList.add('hidden');
-    //     } else {
-    //         document.getElementById('onboardingList').classList.add('hidden');
-    //         document.getElementById('interviewList').classList.remove('hidden');
-    //     }
-    // }
-    
 </script>
 </body>
 </html>
