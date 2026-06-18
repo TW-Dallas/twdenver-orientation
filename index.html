@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="data:,">
     <title>Denver Staffing Command Center</title>
-    <link rel="icon" type="image/png" href="image/tile_blue.png">
+    <link rel="icon" type="image/png" href="tile_blue.png">
         <style>
         @font-face { font-family: 'PizzaPress'; src: url('fonts/Dominos Sans Header 1.ttf') format('truetype'); font-weight: bold; }
         @font-face { font-family: 'OneDotCd-Bold'; src: url('fonts/Dominos Sans Bold.ttf') format('truetype'); font-weight: bold; }
@@ -139,9 +139,11 @@
         });
 
     function populateFilters() {
-        const allDos = [...rawData.onboarding.map(i => i.doName), ...rawData.interviews.map(i => i.doName)];
+        // Strip out the interview references, only map onboarding data
+        const allDos = [...rawData.onboarding.map(i => i.doName)];
         const dos = [...new Set(allDos.filter(d => d && d !== 'DO').map(d => d.toString().trim()))].sort();
-        const allStores = [...rawData.onboarding.map(i => i.store), ...rawData.interviews.map(i => i.store)];
+        
+        const allStores = [...rawData.onboarding.map(i => i.store)];
         const stores = [...new Set(allStores.filter(s => s && s !== 'Store #').map(s => s.toString().trim()))].sort();
 
         const doSelect = document.getElementById('doFilter');
