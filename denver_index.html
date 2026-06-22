@@ -418,18 +418,20 @@
 
         function fetchClasses() {
             document.getElementById('loading-msg').style.display = 'block';
-            document.getElementById('class-grid').innerHTML = '';
-
             fetch(API_URL)
                 .then(response => response.json())
                 .then(data => {
+                    console.log("Data received:", data); // ADD THIS TO SEE THE ERROR
+                    if (!Array.isArray(data)) {
+                        throw new Error(data.error || "Backend returned an object instead of an array");
+                    }
                     allData = data;
                     renderClasses(data);
                     document.getElementById('loading-msg').style.display = 'none';
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    document.getElementById('loading-msg').innerText = "Error loading schedule.";
+                    document.getElementById('loading-msg').innerText = "Error: " + error.message;
                 });
         }
 
